@@ -137,6 +137,16 @@
   margin-bottom: 16px;
 }
 
+.login-success {
+  padding: 11px 13px;
+  border-radius: 8px;
+  background: #edf9f0;
+  color: #24733b;
+  border: 1px solid #ccebd3;
+  font-size: 13px;
+  margin-bottom: 16px;
+}
+
 .login-footer {
   margin-top: 24px;
   display: flex;
