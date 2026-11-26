@@ -52,6 +52,7 @@ function LoginPage({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
 
   async function handleSubmit(event) {
@@ -60,6 +61,13 @@ function LoginPage({ onLogin }) {
     setLoading(true);
     try {
       await onLogin({ username, email, password, registering });
+      if (registering) {
+        setRegistering(false);
+        setUsername("");
+        setEmail("");
+        setPassword("");
+        setSuccess("Account created successfully. Please log in with your credentials.");
+      }
     } catch (requestError) {
       setError(requestError.message || "Unable to continue");
     } finally {
@@ -116,6 +124,7 @@ function LoginPage({ onLogin }) {
             minLength={registering ? 8 : undefined}
             required
           />
+          {success && <div className="login-success" role="status">{success}</div>}
           {error && <div className="login-error">{error}</div>}
           <button type="submit" className="login-button" disabled={loading}>
             {loading ? <><LoaderCircle size={18} className="spin" /> Please wait...</> : <>
@@ -126,6 +135,7 @@ function LoginPage({ onLogin }) {
         <button className="text-button auth-switch" onClick={() => {
           setRegistering((value) => !value);
           setError("");
+          setSuccess("");
         }}>
           {registering ? "Already registered? Sign in" : "New here? Create an employee account"}
         </button>
@@ -743,7 +753,10 @@ export default function App() {
   }, []);
 
   async function handleLogin({ username, email, password, registering }) {
-    if (registering) await registerUser(username, email, password);
+    if (registering) {
+      await registerUser(username, email, password);
+      return;
+    }
     await loginUser(username, password);
     const currentUser = await getCurrentUser();
     if (currentUser.role !== "admin" && currentUser.role !== "employee") {
